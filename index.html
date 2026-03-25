@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>QR Studio | Generate QR Codes</title>
+    <meta
+      name="description"
+      content="Modern QR Code Generator with customization and download features"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+
+    <link
+      rel="icon"
+      href="https://cdn-icons-png.flaticon.com/512/1828/1828919.png"
+    />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- QR Library -->
+    <script src="https://unpkg.com/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
+  </head>
+
+  <body>
+    <button
+      id="theme-toggle"
+      class="toggle"
+      onclick="toggleTheme()"
+      aria-label="Toggle theme"
+    >
+      🌙
+    </button>
+
+    <div class="container">
+      <div class="hero">
+        <h1>QR Studio</h1>
+        <p>Create beautiful QR codes instantly</p>
+      </div>
+
+      <div class="card grid">
+        <!-- LEFT -->
+        <div>
+          <div class="tabs">
+            <div class="tab active" onclick="setType('text', event)">Text</div>
+            <div class="tab" onclick="setType('url', event)">URL</div>
+            <div class="tab" onclick="setType('email', event)">Email</div>
+            <div class="tab" onclick="setType('phone', event)">Phone</div>
+            <div class="tab" onclick="setType('wifi', event)">WiFi</div>
+          </div>
+
+          <div id="inputs"></div>
+
+          <div id="color-picker">
+            <div class="color-row">
+              <div class="color-block">
+                <label for="fg-color">Foreground Color</label>
+                <div class="color-control">
+                  <input type="color" id="fg-color" value="#000000" />
+                  <input
+                    type="text"
+                    id="fg-hex"
+                    maxlength="7"
+                    value="#000000"
+                  />
+                  <span
+                    id="fg-preview"
+                    class="color-preview"
+                    title="Foreground preview"
+                  ></span>
+                </div>
+              </div>
+
+              <div class="color-block">
+                <label for="bg-color">Background Color</label>
+                <div class="color-control">
+                  <input type="color" id="bg-color" value="#ffffff" />
+                  <input
+                    type="text"
+                    id="bg-hex"
+                    maxlength="7"
+                    value="#ffffff"
+                  />
+                  <span
+                    id="bg-preview"
+                    class="color-preview"
+                    title="Background preview"
+                  ></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="palette-block">
+              <label>Presets</label>
+              <div id="color-palette" class="palette"></div>
+              <div
+                id="contrastStatus"
+                class="contrast-status"
+                aria-live="polite"
+              ></div>
+              <div class="preset-actions">
+                <button id="swap-btn" class="small-btn" type="button">
+                  Swap FG/BG
+                </button>
+                <button id="save-btn" class="small-btn" type="button">
+                  Save Preset
+                </button>
+              </div>
+              <small class="palette-hint"
+                >Click a swatch to apply to the last-focused color.</small
+              >
+
+              <label style="margin-top: 10px; display: block">My Presets</label>
+              <div id="user-palette" class="palette" aria-live="polite"></div>
+            </div>
+          </div>
+
+          <label>QR Style</label>
+          <select id="style">
+            <option value="rounded">Rounded</option>
+            <option value="dots">Dots</option>
+            <option value="classy">Classy</option>
+            <option value="square">Square</option>
+          </select>
+
+          <label>Size</label>
+          <input type="range" id="size" min="150" max="400" value="250" />
+
+          <label>Error Correction</label>
+          <select id="error">
+            <option value="L">Low</option>
+            <option value="M">Medium</option>
+            <option value="Q">Quartile</option>
+            <option value="H">High</option>
+          </select>
+
+          <label>Upload Logo</label>
+          <input type="file" id="logo" accept="image/*" />
+          <div class="logo-controls">
+            <label for="logo-style">Logo Style</label>
+            <select id="logo-style">
+              <option value="rounded">Rounded</option>
+              <option value="circle">Circle</option>
+              <option value="square">Square</option>
+            </select>
+
+            <label for="logo-border-color">Border</label>
+            <input type="color" id="logo-border-color" value="#ffffff" />
+            <input
+              type="range"
+              id="logo-border-width"
+              min="0"
+              max="12"
+              value="4"
+            />
+            <span
+              id="logo-preview"
+              class="logo-preview"
+              title="Logo preview"
+            ></span>
+          </div>
+
+          <div class="btn-group">
+            <button onclick="generateQR()">Generate</button>
+            <button onclick="downloadQR('png')">Download PNG</button>
+            <button onclick="downloadQR('svg')">Download SVG</button>
+            <button onclick="saveQR()">Save</button>
+          </div>
+          <div id="status" class="status" aria-live="polite"></div>
+        </div>
+
+        <!-- RIGHT -->
+        <div id="qr-preview"></div>
+
+        <!-- scan me -->
+        <div class="qr-card">
+          <p>📱 Scan Me</p>
+          <div id="qr-scan"></div>
+        </div>
+      </div>
+
+      <!-- History -->
+      <div class="history">
+        <h3>Recent QR Codes</h3>
+        <div id="history"></div>
+      </div>
+
+      <div id="previewModal" class="modal">
+        <span class="close" onclick="closePreview()">×</span>
+        <img id="previewImage" />
+      </div>
+
+      <footer>© 2026 QR Studio • Built for real-world use</footer>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
